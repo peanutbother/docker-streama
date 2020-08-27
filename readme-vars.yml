@@ -1,0 +1,38 @@
+---
+
+# project information
+project_name: streama
+project_url: "https://github.com/streamaserver/streama"
+project_logo: "https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/streama-icon.png"
+project_blurb: |
+  [{{ project_name|capitalize }}]({{ project_url }}) is a HTPC/Homelab Streaming service - Written in Java
+  For more information on {{ project_name|capitalize }} and information on how to use it visit their site at {{project_url}}
+project_lsio_github_repo_url: "https://github.com/linuxserver/docker-{{ project_name }}"
+
+# supported architectures
+available_architectures:
+  - { arch: "{{ arch_x86_64 }}", tag: "amd64-latest"}
+  - { arch: "{{ arch_arm64 }}", tag: "arm64v8-latest"}
+  - { arch: "{{ arch_armhf }}", tag: "arm32v7-latest"}
+
+# container parameters
+param_container_name: "{{ project_name }}"
+param_usage_include_vols: true
+param_volumes:
+  - { vol_path: "/config", vol_host_path: "<path to data>", desc: "this is where your user data will live" }
+  - { vol_path: "/media", vol_host_path: "<path to media>", desc: "this is where your media will live" }
+param_usage_include_env: true
+param_env_vars:
+  - { env_var: "TZ", env_value: "<your timezone, eg Europe/London>", desc: "for specifying your timezone" }
+param_usage_include_ports: true
+param_ports:
+  - { external_port: "9983", internal_port: "8080", port_desc: "will map the container's port 8080 to port 9983 on the host" }
+
+# application setup block
+app_setup_block_enabled: true
+app_setup_block: |
+  Dead simple to get running, create the container as instructed and start it. When up and running, load the site.
+# changelog
+changelogs:
+  - { date: "27.08.20:", desc: "Initial Release." }
+  

@@ -1,0 +1,39 @@
+FROM lsiobase/java
+
+# environment settings
+ARG DEBIAN_FRONTEND="noninteractive"
+ARG BUILD_DATE
+ARG STREAMA_RELEASE
+ARG VERSION
+ARG EXTENSION
+
+LABEL build_version="Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DATE}"
+LABEL maintainer="peanutbother"
+
+RUN \
+ echo "**** install packages ****" && \
+ echo "**** fetch streama ****" && \
+ mkdir -p /app/streama/bin && \
+ if [ -z ${STREAMA_RELEASE+x} ]; then \
+	STREAMA_RELEASE=$(curl -sL https://api.github.com/repos/streamaserver/streama/releases/latest \
+	| awk '/tag_name/{print $4;exit}' FS='[""]'); \
+ fi && \
+ if curl --output /dev/null --silent --head --fail "https://github.com/streamaserver/streama/releases/download/${STREAMA_RELEASE}/streama-${STREAMA_RELEASE#v}.jar"; then \
+	EXTENSION="jar"; else \
+	EXTENSION="war"; fi && \
+ curl -o \
+	/app/streama/bin/streama.jar -L \
+	"https://github.com/streamaserver/streama/releases/download/${STREAMA_RELEASE}/streama-${STREAMA_RELEASE#v}.${EXTENSION}" && \
+ echo "**** clean up ****" && \
+ rm -rf \
+	/tmp/* \
+	/var/lib/apt/lists/* \
+	/var/tmp/*
+
+# add local files
+COPY /root /
+
+# ports and volumes
+EXPOSE 8080
+VOLUME /config
+VOLUME /media

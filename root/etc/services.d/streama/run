@@ -1,0 +1,12 @@
+#!/usr/bin/with-contenv bash
+
+UMASK_SET=${UMASK_SET:-022}
+
+umask "$UMASK_SET"
+
+cd /app/streama/bin || exit
+
+exec \
+	s6-setuidgid abc java \
+    -Dgrails.env=docker \
+    -jar streama.jar
