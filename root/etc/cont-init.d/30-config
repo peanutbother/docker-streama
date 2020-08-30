@@ -3,6 +3,5 @@
 # permissions
 chown -R abc:abc \
 	/config \
-	/media \
 	/app \
 
